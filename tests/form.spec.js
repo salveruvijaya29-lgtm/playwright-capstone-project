@@ -1,14 +1,13 @@
 import { test, expect } from '@playwright/test';
 import formData from '../helpers/formData.json' assert { type: 'json' };
+import { FormPage } from '../pages/FormPage.js';
 
 test('form submission with valid data', async ({ page }) => {
-    await page.goto('https://practice.expandtesting.com/form-validation');
+    const formPage = new FormPage(page);
 
-    await page.locator('#validationCustom01').fill(formData.contactName);
-    await page.locator('[name="contactnumber"]').fill(formData.contactNumber);
-    await page.locator('[name="pickupdate"]').fill(formData.pickupDate);
-    await page.locator('#validationCustom04').selectOption(formData.payment);
+    await formPage.goto();
+    await formPage.fillForm(formData);
+    await formPage.submit();
 
-    await page.click('button[type="submit"]');
-    await expect(page.locator('.valid-feedback').first()).toBeVisible();
+    await expect(formPage.validFeedback).toBeVisible();
 });
